@@ -1,1 +1,86 @@
-hello world
+<!doctype html>
+<html lang=en>
+  <head>
+    <meta charset=utf-8>
+    <title>So Angry</title>
+
+    <script type="text/javascript">
+      // Youtube setup per
+      // https://developers.google.com/youtube/player_parameters
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/player_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      var player;
+
+      // App setup
+      var playbackRate = 1.0;
+      var loopStart_s = 3.0;
+      var loopEnd_s = 3.1;
+
+      var loopStart_ms = loopStart_s * 1000;
+      var loopEnd_ms = loopEnd_s * 1000;
+      var loopLen_ms = loopEnd_ms - loopStart_ms;
+
+      var loopCount = 0;
+      var loopCountMax = 100;
+
+      var mainLoopTimer;
+
+      function clearLoop() {
+        player.setLoop(0);
+        clearInterval(mainLoopTimer);
+      }
+
+      function mainLoop() {
+        var playerTime_s = player.getCurrentTime();
+        
+        if (playerTime_s > loopEnd_s) {
+          if (loopCount >= loopCountMax) {
+            clearLoop();
+          } else {
+            loopCount += 1;
+            player.seekTo(loopStart_s); 
+          }
+        }
+      }
+
+      function onPlayerStateChange(evt) {
+        var playerState = evt.data;
+        if (playerState == YT.PlayerState.PLAYING && mainLoopTimer == null) {
+          // First setup.
+          mainLoopTimer = setInterval(mainLoop, 32);
+        }
+      }
+
+      function onYouTubePlayerAPIReady() {
+        console.log("Yo");
+        var width = document.documentElement.clientWidth;
+        var height = document.documentElement.clientHeight;
+        
+        player = new YT.Player('ytplayer', {
+          height: height - 20, width: width - 20 ,
+          videoId: 've88BGz0nPc',
+          playerVars: {
+            modestbranding: 1,
+            autoplay: 1,
+            start: 1,
+            rel: 0
+          },
+          events: {
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+    </script>
+
+    <style type="text/css">
+      body {
+        background: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ytplayer"></div>
+  </body>
+</html>
