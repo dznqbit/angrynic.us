@@ -49,12 +49,12 @@
         var playerState = evt.data;
         if (playerState == YT.PlayerState.PLAYING && mainLoopTimer == null) {
           // First setup.
-          mainLoopTimer = setInterval(mainLoop, 32);
+          // Skip for now until this abomination is updated
+          // mainLoopTimer = setInterval(mainLoop, 32);
         }
       }
 
       function onYouTubePlayerAPIReady() {
-        console.log("Yo");
         var width = document.documentElement.clientWidth;
         var height = document.documentElement.clientHeight;
         
